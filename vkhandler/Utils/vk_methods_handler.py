@@ -1,7 +1,7 @@
 import requests
 
 v = '5.130'
-token = 'b745b9145286c4c97f8d136f944f6bca7f7dd0c2817fe20c222d70a8c1e7a12a7bf0d0a9595604f5ce0df'
+token = ''
 vk_api_url = "https://api.vk.com/method/"
 
 
