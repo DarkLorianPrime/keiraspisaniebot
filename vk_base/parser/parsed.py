@@ -1,6 +1,6 @@
 from typing import Optional
 
-from vk_base.Config import vk
+from vk_base.config import vk
 from vk_base.parser import parser_method
 from vk_base.utils.validators import is_bot
 

@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from vk_base.Config import vk
+from vk_base.config import vk
 from vk_base.models.localorm import query_exists
 from vk_base.utils.decorators import command_handler, search_command_handler, json_command_handler
 from vk_base.utils.functional import in_group_chat_error, return_error, isMember

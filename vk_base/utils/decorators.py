@@ -1,4 +1,4 @@
-from vk_base.Config import search_commands, commands, json_commands
+from vk_base.config import search_commands, commands, json_commands
 
 
 def command_handler(*args):

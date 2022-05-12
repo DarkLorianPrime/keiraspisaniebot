@@ -1,6 +1,6 @@
 import re
 
-from vk_base.Config import vk
+from vk_base.config import vk
 from vk_base.models.models import Settings, Group
 from vk_base.utils.decorators import command_handler, search_command_handler
 from vk_base.utils.functional import return_error

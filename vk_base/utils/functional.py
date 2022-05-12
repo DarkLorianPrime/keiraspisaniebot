@@ -2,7 +2,7 @@ import os
 
 import requests
 
-from vk_base.Config import vk
+from vk_base.config import vk
 from vk_base.utils.validators import is_bot
 
 

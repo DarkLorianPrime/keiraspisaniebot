@@ -1,6 +1,6 @@
 import json
 
-from vk_base.Config import vk, weeks
+from vk_base.config import vk, weeks
 from vk_base.models.models import Group
 from vk_base.parser import parsed
 from vk_base.utils.decorators import json_command_handler, command_handler

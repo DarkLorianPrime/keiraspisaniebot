@@ -1,4 +1,4 @@
-from vk_base.Config import vk
+from vk_base.config import vk
 
 
 def is_bot(chat_id=0, user_id=0):

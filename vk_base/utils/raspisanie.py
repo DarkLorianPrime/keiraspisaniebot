@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, date
 
 import requests
 
-from vk_base.Config import weeks, time_list
+from vk_base.config import weeks, time_list
 from vk_base.models.localorm import query_exists
 from vk_base.utils.functional import return_error
 from vk_base.commands.errors import get_error_text

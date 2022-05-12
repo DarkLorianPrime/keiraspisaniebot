@@ -14,9 +14,9 @@ import traceback
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 
-from main import Group_settings, Common_raspisanie, Usual_functionality
+from main import group_settings, common_raspisanie, usual_functionality
 from models import models
-from Config import vk
+from config import vk
 from utils.decorators import json_commands, commands, search_commands
 from commands.text import get_text_text
 
