@@ -1,8 +1,8 @@
 from typing import Optional
 
 from vk_base.Config import vk
-from vk_base.Parser import parser_method
-from vk_base.Utils.validators import is_bot
+from vk_base.parser import parser_method
+from vk_base.utils.validators import is_bot
 
 
 def send_pars(group: str, chat_id: int, dont_send: bool = False) -> Optional[dict]:

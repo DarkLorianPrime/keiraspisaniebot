@@ -1,10 +1,10 @@
 import re
 
 from vk_base.Config import vk
-from vk_base.Models.models import Settings, Group
-from vk_base.Utils.decorators import command_handler, search_command_handler
-from vk_base.Utils.functional import return_error
-from vk_base.Utils.validators import is_bot, check_admin
+from vk_base.models.models import Settings, Group
+from vk_base.utils.decorators import command_handler, search_command_handler
+from vk_base.utils.functional import return_error
+from vk_base.utils.validators import is_bot, check_admin
 from vk_base.commands.errors import get_error_text
 from vk_base.commands.text import get_text_text
 

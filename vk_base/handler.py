@@ -6,18 +6,18 @@ from datetime import datetime, timedelta, date
 from typing import Callable, Optional
 
 sys.path.append("..")
-from Utils.validators import is_bot
-from Models.models import Settings, Group
-from Parser.parsed import send_pars
+from utils.validators import is_bot
+from models.models import Settings, Group
+from parser.parsed import send_pars
 
 import traceback
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 
-from Main import Group_settings, Common_raspisanie, Usual_functionality
-from Models import models
+from main import Group_settings, Common_raspisanie, Usual_functionality
+from models import models
 from Config import vk
-from Utils.decorators import json_commands, commands, search_commands
+from utils.decorators import json_commands, commands, search_commands
 from commands.text import get_text_text
 
 

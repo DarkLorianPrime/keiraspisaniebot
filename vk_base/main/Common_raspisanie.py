@@ -1,12 +1,12 @@
 import json
 
 from vk_base.Config import vk, weeks
-from vk_base.Models.models import Group
-from vk_base.Parser import parsed
-from vk_base.Utils.decorators import json_command_handler, command_handler
-from vk_base.Utils.functional import isMember, return_error
-from vk_base.Utils.raspisanie import get_info, week_company, get_week
-from vk_base.Utils.validators import is_bot
+from vk_base.models.models import Group
+from vk_base.parser import parsed
+from vk_base.utils.decorators import json_command_handler, command_handler
+from vk_base.utils.functional import isMember, return_error
+from vk_base.utils.raspisanie import get_info, week_company, get_week
+from vk_base.utils.validators import is_bot
 from vk_base.commands.text import json_keyboard, get_text_text
 
 

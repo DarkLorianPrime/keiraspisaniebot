@@ -3,10 +3,10 @@ from datetime import datetime, timedelta, date
 import requests
 
 from vk_base.Config import weeks, time_list
-from vk_base.Models.localorm import query_exists
-from vk_base.Utils.functional import return_error
+from vk_base.models.localorm import query_exists
+from vk_base.utils.functional import return_error
 from vk_base.commands.errors import get_error_text
-from vk_base.Models.models import Group, Settings
+from vk_base.models.models import Group, Settings
 
 
 def week_company(week_num, timetable, setup, day_int=0, group=0, week=False, updates=None):

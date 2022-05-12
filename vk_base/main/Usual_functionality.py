@@ -3,13 +3,13 @@ import json
 import requests
 
 from vk_base.Config import vk
-from vk_base.Models.localorm import query_exists
-from vk_base.Utils.decorators import command_handler, search_command_handler, json_command_handler
-from vk_base.Utils.functional import in_group_chat_error, return_error, isMember
-from vk_base.Utils.validators import is_bot
+from vk_base.models.localorm import query_exists
+from vk_base.utils.decorators import command_handler, search_command_handler, json_command_handler
+from vk_base.utils.functional import in_group_chat_error, return_error, isMember
+from vk_base.utils.validators import is_bot
 from vk_base.commands.errors import get_error_text
 from vk_base.commands.text import get_text_text, json_group_keyboard
-from vk_base.Models.models import Group, Settings
+from vk_base.models.models import Group, Settings
 from bs4 import BeautifulSoup
 
 

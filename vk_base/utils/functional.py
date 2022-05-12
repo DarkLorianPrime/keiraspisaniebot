@@ -3,7 +3,7 @@ import os
 import requests
 
 from vk_base.Config import vk
-from vk_base.Utils.validators import is_bot
+from vk_base.utils.validators import is_bot
 
 
 class SendedMessage(Exception):
