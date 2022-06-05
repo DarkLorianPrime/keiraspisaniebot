@@ -42,7 +42,7 @@ def check_new_lessons() -> None:
 
 def create_thread(target: Callable[[Optional[bytes]], None], *args) -> None:
     """
-    Создание нового потока
+    Создание нового потока\n
     :param target: Функция для которой будет создан поток
     :param args: Аргументы этой функции (пока конкретно только байты).
     """
@@ -56,28 +56,21 @@ def new_message(response: dict) -> None:  # Если пришло новое с�
     Задает все нужные далее переменные, смотрит, была ли вызвана хоть одна команда. Если вызвана - то идет дальше.
     """
     vk_object = EventInformation(response)
-    text = response['object']['message']['text']
-    lower = text.lower()
-    chat_id = response['object']['message']['peer_id'] - 2000000000
-    peer_id = response['object']['message']['peer_id']
-    user_id = response['object']['message']['from_id']
-    conversation_message_id = response['object']['message']['conversation_message_id']
-    print(str(chat_id) + ' : ' + text)
-    bot = True if peer_id != user_id else False
-    if commands.get(lower) is not None:
-        commands[lower](vk_object)
+    print(str(vk_object.chat_id) + ' : ' + vk_object.text)
+    if commands.get(vk_object.lower) is not None:
+        commands[vk_object.lower](vk_object)
         return
 
     for i in search_commands:
-        if re.search(i, lower):
-            splited = text.split(search_commands[i][1])
+        if re.search(i, vk_object.lower):
+            splited = vk_object.text.split(search_commands[i][1])
             if len(splited) > 1:
                 vk_object.splited_text = splited
                 search_commands[i][0](vk_object)
                 return
 
     if response['object']['message'].get('payload') is not None:
-        payload_data = response['object']['message'].get('payload')
+        payload_data = vk_object.payload
         load = json.loads(payload_data)
         button = load.get("button")
         if button is None:
@@ -93,7 +86,7 @@ def new_message(response: dict) -> None:  # Если пришло новое с�
         action = response['object']['message']['action']
         if action['type'] == 'chat_invite_user' and action['member_id'] == -145807659:
             print('invited in new chat')
-            vk.messages.send(chat_id=chat_id, random_id=0, message=get_text('hello'))
+            vk.messages.send(chat_id=vk_object.chat_id, random_id=0, message=get_text('hello'))
 
 
 def standart_handler(body: bytes) -> None:  # Первичная обработка присланного запроса

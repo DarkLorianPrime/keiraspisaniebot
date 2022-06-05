@@ -6,13 +6,13 @@ import requests
 import shutil
 import zipfile
 
-standart_path = 'changes/'
-standart_path_renamed = standart_path + "changes/"
+standard_path = 'changes/'
+standard_path_renamed = standard_path + "changes/"
 
 
 def zip_to_txt():
-    os.system(f'sudo lowriter --convert-to doc {standart_path_renamed}raspisanie.docx --outdir {standart_path_renamed}')
-    os.system(f'sudo antiword {standart_path_renamed}raspisanie.doc > {standart_path_renamed}raspisanie.txt')
+    os.system(f'sudo lowriter --convert-to doc {standard_path_renamed}schedule.docx --outdir {standard_path_renamed}')
+    os.system(f'sudo antiword {standard_path_renamed}schedule.doc > {standard_path_renamed}schedule.txt')
 
 
 def get_from_yadisk():
@@ -30,42 +30,42 @@ def parser(group):
     returned_string = ""
     download_response = get_from_yadisk()
 
-    with open(standart_path + 'downloaded_file.zip', 'wb') as f:
+    with open(standard_path + 'downloaded_file.zip', 'wb') as f:
         f.write(download_response.content)
-        shutil.rmtree(standart_path_renamed, ignore_errors=True)
+        shutil.rmtree(standard_path_renamed, ignore_errors=True)
 
-        with zipfile.ZipFile(standart_path + 'downloaded_file.zip', 'r') as docfile:
-            docfile.extractall(standart_path)
+        with zipfile.ZipFile(standard_path + 'downloaded_file.zip', 'r') as docfile:
+            docfile.extractall(standard_path)
 
-        os.rename(standart_path + 'Изменения в расписании на день', standart_path_renamed)
-        listdir_standart = os.listdir(standart_path_renamed)
-        file = listdir_standart[1] if len(os.listdir(standart_path_renamed)) > 1 else listdir_standart[0]
-        os.rename(f'{standart_path_renamed}{file}', f'{standart_path_renamed}raspisanie.docx')
+        os.rename(standard_path + 'Изменения в расписании на день', standard_path_renamed)
+        listdir_standard = os.listdir(standard_path_renamed)
+        file = listdir_standard[1] if len(os.listdir(standard_path_renamed)) > 1 else listdir_standard[0]
+        os.rename(f'{standard_path_renamed}{file}', f'{standard_path_renamed}schedule.docx')
         zip_to_txt()
         group = group.lower().split(' ')[0]
 
-        with open(f'{standart_path_renamed}raspisanie.txt', 'r') as f:
+        with open(f'{standard_path_renamed}schedule.txt', 'r') as schedule:
 
-            date = f.readline()
+            date = schedule.readline()
             while "изменения" not in date.lower():
-                date = f.readline()
+                date = schedule.readline()
 
-            for i in f.readlines():
-                groups2 = group if re.search(group.split(',')[0], i.lower()) is not None else group.replace("-", " ")
+            for line in schedule.readlines():
+                groups2 = group if re.search(group.split(',')[0], line.lower()) is not None else group.replace("-", " ")
 
-                if re.search(groups2, i.lower()) is not None:
-                    splited = i.split('|')
+                if re.search(groups2, line.lower()) is not None:
+                    splited = line.split('|')
 
                     if len(splited) < 4:
                         returned_string += " ".join(splited)
                         continue
 
                     if re.search('Нет', splited[3]):
-                        returned_string += f"{splited[2].rsplit()[0]} пр. - Пары нет. - Препод: ❌\n"
+                        returned_string += f"{splited[2].rsplit()[0]} пр. - Пары нет. - Преподаватель: ❌\n"
                         updated.append({splited[2]: ['Нет', 'Нет']})
                         continue
 
-                    returned_string += f"{splited[2].rsplit()[0]} пр. - Пара: {splited[3]} - Аудитория: {splited[5]} - Препод: {splited[4]}\n"
+                    returned_string += f"{splited[2].rsplit()[0]} пр. - Пара: {splited[3]} - Аудитория: {splited[5]} - Преподаватель: {splited[4]}\n"
                     updated.append({splited[2].rsplit()[0]: [splited[3], splited[5], splited[4]]})
 
         if returned_string == "":
