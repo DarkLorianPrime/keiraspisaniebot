@@ -1,8 +1,9 @@
-from vk_base.config import vk
+from config import vk
 
 
 def is_bot(chat_id=0, user_id=0):
     dict_id = {}
+    chats = False
     if user_id > 0 or chat_id > 200000:
         chats = False
         dict_id['chat_id'] = user_id if chat_id < 200000 else chat_id

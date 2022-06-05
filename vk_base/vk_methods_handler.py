@@ -21,9 +21,9 @@ class methods(object):
         :return: https://vk.com/dev/methods
         """
         if self._method is None:
+            print("error", "Method not entered")
             self.return_traceback('Method not entered')
-        kwargs['v'] = v
-        kwargs['access_token'] = token
+        kwargs.update({"v": v, "access_token": token})
         method = self._method.split('>.')[1]
         if method == "messages.send":
             if len(kwargs['message']) > 3000:
@@ -37,16 +37,35 @@ class methods(object):
         rw = requests.get(vk_api_url + method, params=kwargs)
         try:
             if rw.json().get('error'):
-                text_s = rw.json()["error"]["error_msg"]
-                self.return_traceback(text_s)
+                print('error:', rw.json()["error"]["error_msg"])
         except Exception as e:
             print(e)
         return rw.json()
-
-    def return_traceback(self, text_s):
-        print('error:', text_s)
 
 
 class message_handler(object):
     def connect_to_methods(self):
         return methods(self)
+
+class EventInformation:
+    __slots__ = ["payload", "clear_query", "group_id", "chat_id", "message", "type", "text", "from_id", "peer_id",
+                 "conversation_message_id", "send_id", "splited_text", "lower", "group"]
+
+    def __init__(self, raw_query: dict, splited_text: list = None):
+        if splited_text is not None:
+            self.splited_text = splited_text
+        self.clear_query = raw_query["object"]
+        self.type = raw_query['type']
+        self.group_id = raw_query["group_id"]
+        self.chat_id = self.clear_query['message']['peer_id']
+        self.from_id = self.clear_query["message"]["from_id"]
+        if self.chat_id > 2000000000:
+            self.chat_id = self.chat_id - 2000000000
+        self.peer_id = self.clear_query['message']['peer_id']
+        self.message = self.clear_query['message']
+        self.text = self.clear_query['message']['text']
+        self.lower = self.text.lower()
+        self.payload = self.clear_query['message'].get("payload")
+        self.conversation_message_id = self.clear_query["message"]["conversation_message_id"]
+        self.group = False if self.peer_id == self.from_id else True
+        self.send_id = {"user_id": self.chat_id} if self.peer_id == self.from_id else {"chat_id": self.chat_id}

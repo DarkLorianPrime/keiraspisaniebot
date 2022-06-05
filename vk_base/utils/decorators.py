@@ -1,8 +1,9 @@
-from vk_base.config import search_commands, commands, json_commands
+from config import search_commands, commands, json_commands
 
 
 def command_handler(*args):
     def decorator(fn):
+        print(args)
         for i in args:
             commands[i.lower()] = fn
     return decorator
