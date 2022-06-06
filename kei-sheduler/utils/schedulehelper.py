@@ -4,8 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import weeks, time_list
-from models.localorm import query_exists
-from utils.functional import return_error
+from models.database import query_exists
+from utils.functional import send_text
 from commands.text import get_text
 from models.models import Group, Settings
 
@@ -83,32 +83,28 @@ def week_company(week_num, timetable, setup, day_int=0, group=0, week=False, upd
     return text
 
 
-def get_info(send_id, chat_id, notsunday=False):
-    info = dict()
-
-    info['time_now'] = datetime.now().time()
+def get_timetable(send_id: dict, chat_id: int, notsunday: bool = False) -> dict:
     if not query_exists(Group.chat_id, str(chat_id)):
-        return_error(error=get_text('not_group'), send_id=send_id)
+        send_text(error=get_text('not_group'), send_id=send_id)
 
     group = Group.where(chat_id=str(chat_id)).first().group
     response = requests.get(f'https://time.ulstu.ru/api/1.0/timetable?filter={group}')
 
     if response.status_code in [400, 404]:
         response = requests.get(f'https://timetable.athene.tech/api/1.0/timetable?filter={group}')
-
-    info['timetable'] = response.json()['response']
+    info = dict(time_now=datetime.now().time(), timetable=response.json()['response'])
     week_int = 0 if datetime.now().isocalendar()[1] % 2 == 0 else 1
 
     info["to_days"] = {"week_num": week_int, "setup": Settings.where(chat_id=str(chat_id)).first(),
                        "day_int": date.today().weekday() if date.today().weekday() != 6 else -1, "group": group}
     if notsunday:
         if info["to_days"]["day_int"] == 6 or info["to_days"]["day_int"] == -1:
-            return_error("Так воскресение же 🤔\nА воскресение не считается 😉", chat_id)
+            send_text("Так воскресение же 🤔\nА воскресение не считается 😉", chat_id)
     return info
 
 
-def get_week(that_week=False, send_id=0, chat_id=0):
-    info = get_info(send_id, chat_id)
+def get_week(that_week=False, send_id=None, chat_id=0):
+    info = get_timetable(send_id, chat_id)
     week_number = info["to_days"]["week_num"]
     week = 'эту' if that_week else 'следующую'
 
@@ -127,9 +123,8 @@ def get_week(that_week=False, send_id=0, chat_id=0):
 
 
 def get_page_groups(number):
-    groups, groups_0, groups_1 = [], 0, 0
+    groups, groups_0, groups_1 = [[]], 0, 0
     page = requests.get("https://lk.ulstu.ru/timetable/shared/schedule/Часть%203%20–%20МФ,%20КЭИ/raspisan.html").content
-    groups.append([])
 
     for element in BeautifulSoup(page, "lxml").find_all("font"):
         if element.text != "":

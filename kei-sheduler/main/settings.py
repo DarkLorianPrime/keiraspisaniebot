@@ -3,8 +3,7 @@ import re
 from config import vk
 from models.models import Settings, Group
 from utils.decorators import command_handler, search_command_handler
-from utils.functional import return_error
-from utils.validators import check_admin
+from utils.functional import send_text, is_admin
 from commands.text import get_text
 from vk_methods_handler import EventInformation
 
@@ -15,14 +14,14 @@ def settings(vk_object: EventInformation):
         if Settings.where(chat_id=str(vk_object.chat_id)).first() is not None:
             if Settings.where(chat_id=str(vk_object.chat_id)).first().admin_access:
 
-                if not check_admin(vk_object.peer_id, vk_object.from_id):
-                    return_error(**vk_object.send_id, error=get_text('access'))
+                if not is_admin(vk_object.peer_id, vk_object.from_id):
+                    send_text(send_id=vk_object.send_id, error=get_text('access'))
 
     setup = Settings.where(chat_id=str(vk_object.chat_id)).first()
     group = Group.where(chat_id=str(vk_object.chat_id)).first()
 
     if group is None:
-        return_error(error=get_text('need_group'), send_id=vk_object.send_id)
+        send_text(error=get_text('need_group'), send_id=vk_object.send_id)
     setups = [group.group, setup.admin_access, setup.add_time, setup.add_teacher, setup.add_class, setup.autosend,
               setup.autosend_time, setup.notify_update]
     template = get_text('settings', *setups)
@@ -38,8 +37,8 @@ def change_settings(vk_object: EventInformation):
     if vk_object.group:
         check = Settings.where(chat_id=str(vk_object.chat_id)).first().admin_access
         if check:
-            if not check_admin(vk_object.peer_id, vk_object.from_id):
-                return_error(get_text('access'), vk_object.chat_id)
+            if not is_admin(vk_object.peer_id, vk_object.from_id):
+                send_text(get_text('access'), vk_object.chat_id)
     text = vk_object.splited_text[1].lower()
     command = dict_with_names[vk_object.splited_text[0].lower()]
     if re.match('^\\d\\d:\\d\\d$', text) is not None and command == 'autosend_time':
@@ -53,6 +52,6 @@ def change_settings(vk_object: EventInformation):
         Settings.where(chat_id=str(vk_object.chat_id)).first().update(**{command: command_update})
 
     else:
-        return_error(error=get_text('time_add_error'), send_id=vk_object.send_id)
+        send_text(error=get_text('time_add_error'), send_id=vk_object.send_id)
 
     vk.messages.send(**vk_object.send_id, message='Обновлено ✅', random_id=0)

@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy_mixins import AllFeaturesMixin
 
-from vk_base.models.database import session
+from models.database import session
 
 Base = declarative_base()
 

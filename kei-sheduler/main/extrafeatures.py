@@ -4,7 +4,7 @@ import requests
 
 from config import vk
 from utils.decorators import command_handler, search_command_handler, json_command_handler
-from utils.functional import return_error, isMember
+from utils.functional import send_text, is_member
 from utils.schedulehelper import insert_into_peer, get_page_groups, insert_keyboard, set_page
 from commands.text import json_group_keyboard, get_text
 
@@ -19,7 +19,7 @@ def help_command(vk_object: EventInformation, ):
 @command_handler('zoom', 'коды zoom')
 def zoom_codes(vk_object: EventInformation, ):
     if not vk_object.group:
-        return_error('Данная функция работает только в беседах ❌.', send_id=vk_object.send_id)
+        send_text('Данная функция работает только в беседах ❌.', send_id=vk_object.send_id)
     vk.messages.send(chat_id=vk_object.chat_id, random_id=0, message=get_text('zoom'))
 
 
@@ -31,12 +31,13 @@ def all_groups(vk_object: EventInformation, ):
 
 @json_command_handler("group")
 def groups(vk_object: EventInformation, ):
-    isMember(vk_object.from_id, vk_object.send_id)
+    is_member(vk_object.from_id, vk_object.send_id)
     response = requests.get('https://timetable.athene.tech/api/1.0/groups')
     groups_list = [item.lower() for item in response.json()['response']]
 
     if not vk_object.payload.lower() in groups_list:
-        return_error(send_id=vk_object.send_id, error=get_text('group_not_found'))
+        send_text(send_id=vk_object.send_id, error=get_text('group_not_found'))
+
     vk.messages.send(**vk_object.send_id, random_id=0, message=get_text('successful_add_group', vk_object.payload))
     insert_into_peer(vk_object.payload, str(vk_object.chat_id))
 
@@ -55,7 +56,7 @@ def page(vk_object: EventInformation, ):
 
 @search_command_handler(['добавить группу', ' '])
 def add_chat_perfect(vk_object: EventInformation, ):
-    isMember(vk_object.from_id, vk_object.send_id)
+    is_member(vk_object.from_id, vk_object.send_id)
     keyboards = json_group_keyboard()
     insert_keyboard(keyboards, get_page_groups(0))
     set_page(0, 1, keyboards)
@@ -68,6 +69,6 @@ def add_chat(vk_object: EventInformation, ):
     response = requests.get('https://time.ulstu.ru/api/1.0/groups')
     groups_list = [item.lower() for item in response.json()['response']]
     if not group.lower() in groups_list:
-        return_error(send_id=vk_object.send_id, error=get_text('group_not_found'))
+        send_text(send_id=vk_object.send_id, error=get_text('group_not_found'))
     vk.messages.send(**vk_object.send_id, random_id=0, message=get_text('successful_add_group', group))
     insert_into_peer(group, str(vk_object.chat_id))

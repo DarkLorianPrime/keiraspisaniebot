@@ -1,20 +1,24 @@
 import requests
-
+import os
+import dotenv
 v = '5.130'
-token = "b745b9145286c4c97f8d136f944f6bca7f7dd0c2817fe20c222d70a8c1e7a12a7bf0d0a9595604f5ce0df"
+
+dotenv.load_dotenv()
+
+token = os.getenv("vk_token")
 vk_api_url = "https://api.vk.com/method/"
 
 
-class methods(object):
+class methods:
     __slots__ = '_method'
 
-    def __init__(self, method=None):
+    def __init__(self, method=None) -> None:
         self._method = method
 
-    def __getattr__(self, method):
+    def __getattr__(self, method: str) -> object:
         return methods(method=f'{self._method}.{method}')
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs) -> dict:
         """
         :param method: Метод выполняемый в вк апи
         :param kwargs: Аргументы для этого метода
@@ -22,7 +26,6 @@ class methods(object):
         """
         if self._method is None:
             print("error", "Method not entered")
-            self.return_traceback('Method not entered')
         kwargs.update({"v": v, "access_token": token})
         method = self._method.split('>.')[1]
         if method == "messages.send":
@@ -43,15 +46,22 @@ class methods(object):
         return rw.json()
 
 
-class message_handler(object):
+class message_handler:
     def connect_to_methods(self):
         return methods(self)
+
 
 class EventInformation:
     __slots__ = ["payload", "clear_query", "group_id", "chat_id", "message", "type", "text", "from_id", "peer_id",
                  "conversation_message_id", "send_id", "splited_text", "lower", "group"]
 
-    def __init__(self, raw_query: dict, splited_text: list = None):
+    def __init__(self, raw_query: dict, splited_text: list = None) -> None:
+        """
+        Класс, позволяющий удобно взаимодействовать со всеми нужными компонентами.
+        Вычленяет из сырого запроса информацию и сохраняет в параметры класса.
+        :param raw_query:
+        :param splited_text:
+        """
         if splited_text is not None:
             self.splited_text = splited_text
         self.clear_query = raw_query["object"]
